@@ -90,3 +90,5 @@ def square(n):
     #return pow(n,2)
 
 main()
+
+name = name.lower
