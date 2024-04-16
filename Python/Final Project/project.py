@@ -1,8 +1,10 @@
+import re
+import sys
 import time
 import datetime
-from tabulate import tabulate
 from pyfiglet import Figlet
-import sys
+from tabulate import tabulate
+from playsound import playsound
 
 
 class Pomodoro:
@@ -17,13 +19,14 @@ class Pomodoro:
             m1 = int(data[6])
             s1 = int(data[7])
 
-        print("Your timer starts now")
-        total_seconds = h * 3600 + m * 60 + s
-        while total_seconds > 0:
-            work = datetime.timedelta(seconds=total_seconds)
+        print("Your timer starts now...")
+        work_time = h * 3600 + m * 60 + s
+        while work_time > 0:
+            work = datetime.timedelta(seconds=work_time)
             print(work, end="\r")
             time.sleep(1)
-            total_seconds -= 1
+            work_time -= 1
+        playsound("work.wav")
 
         print("Time to take a break!")
         time.sleep(1)
@@ -33,42 +36,83 @@ class Pomodoro:
             print(rest, end="\r")
             time.sleep(1)
             rest_time -= 1
+        playsound("break.wav")
 
         Pomodoro.conti(self)
 
     def settings(self):
         print("Please enter the time you want to work/study")
+        time_prompts = [
+            ("Enter the time in hours: "),
+            ("Enter the time in minutes: "),
+            ("Enter the time in seconds: ")
+        ]
+        error_prompt = "Input must be a number. Please try again."
+        while True:
+            try:
+                h = input(time_prompts[0])
+                if not h or not re.search(r"[0-9]", h):
+                    raise ValueError
+                break
+            except ValueError:
+                print(error_prompt)
+        while True:
+            try:
+                m = input(time_prompts[1])
+                if not m or not re.search(r"[0-9]", m):
+                    raise ValueError
+                break
+            except ValueError:
+                print(error_prompt)
+        while True:
+            try:
+                s = input(time_prompts[2])
+                if not s or not re.search(r"[0-9]", s):
+                    raise ValueError
+                break
+            except ValueError:
+                print(error_prompt)
 
-        h = input("Enter the time in hours: ")
-        m = input("Enter the time in minutes: ")
-        s = input("Enter the time in seconds: ")
+        print("Please enter the duration of the break")
+        while True:
+            try:
+                h1 = input(time_prompts[0])
+                if not h1 or not re.search(r"[0-9]", h1):
+                    raise ValueError
+                break
+            except ValueError:
+                print(error_prompt)
+        while True:
+            try:
+                m1 = input(time_prompts[1])
+                if not m1 or not re.search(r"[0-9]", m1):
+                    raise ValueError
+                break
+            except ValueError:
+                print(error_prompt)
+        while True:
+            try:
+                s1 = input(time_prompts[2])
+                if not s1 or not re.search(r"[0-9]", s1):
+                    raise ValueError
+                break
+            except ValueError:
+                print(error_prompt)
         with open("settings.txt") as file:
             data = file.readlines()
             data[1] = h + "\n"
             data[2] = m + "\n"
             data[3] = s + "\n"
-        with open("settings.txt", "w") as file:
-            for line in data:
-                file.write(line)
-
-        print("Please enter the duration of the break")
-
-        h1 = input("Enter the time in hours: ")
-        m1 = input("Enter the time in minutes: ")
-        s1 = input("Enter the time in seconds: ")
-        with open("settings.txt") as file:
-            data = file.readlines()
             data[5] = h1 + "\n"
             data[6] = m1 + "\n"
             data[7] = s1 + "\n"
         with open("settings.txt", "w") as file:
             for line in data:
                 file.write(line)
-
         Pomodoro.menu(self)
 
     def menu(self):
-        table = [["1", "Start Timer"], ["2", "Change Timmer Settings"]]
+        table = [["1", "Start Timer"], ["2", "Change Timmer Settings"], ["3", "Exit"]]
         print(tabulate(table, tablefmt="pipe"))
         print("\n")
         while True:
@@ -79,6 +123,8 @@ class Pomodoro:
                     Pomodoro.timer(self)
                 elif pressed == 2:
                     Pomodoro.settings(self)
+                elif pressed == 3:
+                    sys.exit("See you again!")
                 else:
                     print("Not a correct option")
             except ValueError:
