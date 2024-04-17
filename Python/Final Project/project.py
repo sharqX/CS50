@@ -26,7 +26,7 @@ class Pomodoro:
             print(work, end="\r")
             time.sleep(1)
             work_time -= 1
-        playsound("work.wav")
+        playsound("sounds/work.wav")
 
         print("Time to take a break!")
         time.sleep(1)
@@ -36,7 +36,7 @@ class Pomodoro:
             print(rest, end="\r")
             time.sleep(1)
             rest_time -= 1
-        playsound("break.wav")
+        playsound("sounds/break.wav")
 
         Pomodoro.conti(self)
 

@@ -1,8 +1,8 @@
 Work Settings
 0
-25
-0
-Break Settings
 0
 5
+Break Settings
 0
+0
+5
